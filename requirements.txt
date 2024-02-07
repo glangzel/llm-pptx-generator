@@ -1,0 +1,9 @@
+python-dotenv
+langchain
+sap-llm-commons[all]
+pypdf
+#llm-commons
+#python-llm
+#openai
+#ai-core-sdk
+#sap-ai-core-llm

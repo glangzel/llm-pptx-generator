@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-hello-world
+  namespace: flask-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-hello-world
+  template:
+    metadata:
+      labels:
+        app: flask-hello-world
+        version: v1
+    spec:
+      containers:
+      - name: flask-hello-world
+        image: private-docker-nexus.c-290ae5b.kyma.shoot.live.k8s-hana.ondemand.com/flaskbtp
+        # I made private image registry on kyma
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "1000m"
+          requests:
+            memory: 128Mi
+        ports:
+        - containerPort: 5110
+          name: http
+        # volumeMounts:
+        # - mountPath: /usr/src/app/myvolume
+        #   name: flask-hello-world-volume
+        # - mountPath: /usr/src/app/config
+        #   name: flask-hello-world-file01-configmap 
+      imagePullSecrets: 
+        - name: regcred
+      # volumes:
+      # - name: flask-hello-world-volume
+      #   persistentVolumeClaim:
+      #     claimName: flask-hello-world-volumeclaim
+      # - name: flask-hello-world-file01-configmap
+      #   configMap: 
+      #     name: flask-hello-world-file01
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-hello-world-service
+  labels:
+    app: flask-hello-world
+spec:
+  ports:
+  - port: 5110
+    name: flask-port
+    targetPort: 5110
+  selector:
+    app: flask-hello-world
+---
+apiVersion: gateway.kyma-project.io/v1beta1
+kind: APIRule
+metadata:
+  name: flask-hello-world-rule
+  namespace: flask-test
+spec:
+  gateway: kyma-gateway.kyma-system.svc.cluster.local
+  service:
+    name: flask-hello-world-service
+    port: 5110
+  host: flask-hello-world
+  rules:
+    - path: /.*
+      methods:
+        - GET
+        - POST
+      mutators: []
+      accessStrategies:
+        - handler: noop
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: flask-hello-world-volumeclaim
+#   namespace: flask-test
+# spec:
+#   accessModes:
+#   - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 100Mi
+# status: {}
+# ---
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   name: flask-hello-world-file01
+#   namespace: flask-test
+# data:
+#   testfile01.txt: |
+#     # This is just a sample file content
+#     # for a file added through yaml

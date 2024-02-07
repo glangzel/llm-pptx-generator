@@ -1,0 +1,11 @@
+task
+*.bk
+srcbk
+env_genpctx
+Cache
+GeneratedPresentations
+src/.env
+.venv
+lpg
+src/__pycache__
+src/tmp
