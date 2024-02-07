@@ -9,3 +9,4 @@ src/.env
 lpg
 src/__pycache__
 src/tmp
+doc/*
