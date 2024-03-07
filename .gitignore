@@ -1,0 +1,4 @@
+src/.env
+src/src
+src/tmp
+pip.conf
