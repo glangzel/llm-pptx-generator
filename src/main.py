@@ -19,6 +19,7 @@ DESIGN_TEMPLATE = f"./src/Designs/Design-{design_number}.pptx"
 
 def main()->None:
     input_topic = input("Enter a topic (type 'exit' to stop): ")
+    output_language = input("Enter output language\n(ja: Japanese, en: English, es: Spanish, ko: Korean, zh: Chinese, fr: French, de: German, ar: Arabic, ru: Russian, hi: Hindi, pt: Portuguese): ")
     # input_page = input("Enter page number (type 'exit' to stop): ")
     
     """ Main routine of program. """
@@ -32,7 +33,7 @@ def main()->None:
         db = Chroma(embedding_function=get_llm.get_embed(), persist_directory=f"{os.path.join(FOLDER_NAME, FILENAME.rsplit('.', 1)[0].lower())}_doc.db")
 
         # JSON -> Python Object
-        data = json.loads(retrieve_data.retrieve_data(vector_db=db, llm=get_llm.get_llm(), topic=input_topic, language="en"))
+        data = json.loads(retrieve_data.retrieve_data(vector_db=db, llm=get_llm.get_llm(), topic=input_topic, language=output_language))
         print("parsing done!")
         gen_pptx.gen_pptx(data, DESIGN_TEMPLATE)
         print("gen pptx done!")  
