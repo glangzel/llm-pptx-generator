@@ -30,23 +30,12 @@ def main()->None:
     if (upload_text.upload_text(emb=get_llm.get_embed(), filename=FILENAME, src_folder=SRC_FOLDER, dst_folder=FOLDER_NAME)):
         # Open connection to DB (normally you would not do that twice but here is just for testing)
         db = Chroma(embedding_function=get_llm.get_embed(), persist_directory=f"{os.path.join(FOLDER_NAME, FILENAME.rsplit('.', 1)[0].lower())}_doc.db")
-        
 
-        # try:
-        # json_data=json.dumps(retrieve_data.retrieve_data(vector_db=db, llm=get_llm.get_llm(), topic=input_topic, slide_count=str(input_page)), indent=4)
-
-
-        # JSON文字列をPythonオブジェクトに変換
+        # JSON -> Python Object
         data = json.loads(retrieve_data.retrieve_data(vector_db=db, llm=get_llm.get_llm(), topic=input_topic, language="en"))
         print("parsing done!")
         gen_pptx.gen_pptx(data, DESIGN_TEMPLATE)
         print("gen pptx done!")  
-
-        # オブジェクトから値を取り出す例
-        
-            # if user_input.lower() == 'exit':
-            #     print("Exiting.")
-            #     break
             
 
 if __name__ == '__main__':
